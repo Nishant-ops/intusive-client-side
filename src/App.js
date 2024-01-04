@@ -1,12 +1,15 @@
-import logo from "./logo.svg";
 import "./App.css";
-import AdminDashboard from "./Components/AdminDashboard";
+import AdminLogin from "./Components/AdminLogin";
+import { Route, Routes } from "react-router-dom";
+import AdminRegister from "./Components/AdminRegister";
+import UserRegister from "./Components/UserRegister/UserRegister";
 
 function App() {
   return (
-    <div className="App">
-      <AdminDashboard />
-    </div>
+    <Routes>
+      <Route path="/login" element={<AdminLogin />} />
+      <Route path="/register" element={<UserRegister />} />
+    </Routes>
   );
 }
 

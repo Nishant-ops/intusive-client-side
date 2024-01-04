@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 function AdminDashboard() {
-  return <div>AdminDashboard</div>;
+  useEffect(() => {}, []);
 }
 
 export default AdminDashboard;
