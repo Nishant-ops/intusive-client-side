@@ -11,17 +11,40 @@ import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 // TODO remove, this demo shouldn't need to reset the theme.
 
 export default function AdminLogin() {
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
+  let navigate = useNavigate();
+  const handleSubmit = async (event) => {
+    try {
+      event.preventDefault();
+      const data = new FormData(event.currentTarget);
+      const userData = {
+        email: data.get("email"),
+        password: data.get("password"),
+      };
+      const res = await axios({
+        method: "post",
+        url: "http://localhost:8080/login",
+        data: userData,
+        headers: { "Content-Type": "application/json" },
+      });
+      if (res.status == 200) {
+        localStorage.setItem("access-token", res.data.data.accessToken);
+        localStorage.setItem("role", res.data.data.role);
+        localStorage.setItem("email", res.data.data.email);
+        if (localStorage.getItem("role") == "Admin") {
+          navigate("/admin");
+        } else {
+          navigate("/");
+        }
+      }
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (

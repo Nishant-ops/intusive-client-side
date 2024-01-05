@@ -13,21 +13,55 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { useState } from "react";
 import { Select, InputLabel, MenuItem, FormControl } from "@mui/material";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 export default function Register({ isAdmin }) {
   const [role, setRole] = useState("User");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("");
+  let naviate = useNavigate();
   const handleRoleChange = (event) => {
     setRole(event.target.value);
   };
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
-  };
+  const handleSubmit = async (event) => {
+    try {
+      event.preventDefault();
+      let data = {
+        name: firstName + " " + lastName,
+        email: email,
+        password: password,
+        role: role,
+      };
+      console.log(data);
+      const res = await axios({
+        method: "post",
+        url: "http://localhost:8080/register",
+        data: data,
+        headers: { "Content-Type": "application/json" },
+      });
 
+      if (res.status == 200) {
+        naviate("/login");
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  const handleFirstNameChange = (event) => {
+    setFirstName(event.target.value);
+  };
+  const handleLastNameChange = (event) => {
+    setLastName(event.target.value);
+  };
+  const handlePasswordChange = (event) => {
+    setPassword(event.target.value);
+  };
+  const handleEmailChange = (event) => {
+    setEmail(event.target.value);
+  };
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
@@ -49,6 +83,7 @@ export default function Register({ isAdmin }) {
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
               <TextField
+                onChange={handleFirstNameChange}
                 autoComplete="given-name"
                 name="firstName"
                 required
@@ -60,6 +95,7 @@ export default function Register({ isAdmin }) {
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField
+                onChange={handleLastNameChange}
                 required
                 fullWidth
                 id="lastName"
@@ -70,6 +106,7 @@ export default function Register({ isAdmin }) {
             </Grid>
             <Grid item xs={12}>
               <TextField
+                onChange={handleEmailChange}
                 required
                 fullWidth
                 id="email"
@@ -82,6 +119,7 @@ export default function Register({ isAdmin }) {
               <TextField
                 required
                 fullWidth
+                onChange={handlePasswordChange}
                 name="password"
                 label="Password"
                 type="password"
